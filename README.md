@@ -44,4 +44,4 @@ Add copolymerizations with products separated by '.'
 ## Authorship
 
 
-* Author: **Brenda Ferrari** ([bferrari](https://github.ibm.com/bferrari))
+* Author: **Brenda Ferrari** 
