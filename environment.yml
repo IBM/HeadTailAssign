@@ -1,0 +1,12 @@
+name: headtailassign
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - pandas=1.1.5
+  - numpy=1.19.2
+  - openbabel=3.1.1
+  - rdkit=2020.09.1.0
+  - ascii-art=5.9
+  - tqdm=4.65.0
