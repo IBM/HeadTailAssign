@@ -36,16 +36,29 @@ class Extractor:
                             with open(path_output, "w") as out:
                                 print(f'Analyzing {file}...')
                                 out.write(f'{file}\n')
-                                out.write('          ----- MULLIKEN ATOMIC OVERLAP POPULATIONS -----\n')
                                 should_write=False
                                 for x, line in enumerate(f):
-                                    if line.find('          ----- MULLIKEN ATOMIC OVERLAP POPULATIONS -----')!=-1:
+                                    if line.find('               ----- POPULATIONS IN EACH AO -----')!=-1:
                                         should_write=False
                                     if should_write:
                                         out.write(line)
-                                    if line.find('               ----- POPULATIONS IN EACH AO -----')!=-1:
+                                    if line.find('     ATOMIC MULLIKEN POPULATION IN EACH MOLECULAR ORBITAL')!=-1:
+                                        out.write('     ATOMIC MULLIKEN POPULATION IN EACH MOLECULAR ORBITAL\n')
+                                        should_write=True
+                                    
+                                    if line.find(' SYMMETRIES FOR INITIAL GUESS ORBITALS FOLLOW.   BOTH SET(S).')!=-1:
+                                        out.write('\n     OCCUPIED ORBITALS\n')
+                                        for i in range(1):
+                                            out.write(next(f))
+                                            out.write(f'\n---------------------')
+                                    
+                                    if line.find('          INTERNUCLEAR DISTANCES (ANGS.)')!=-1:
+                                        should_write=False
+                                    if line.find('           CHARGE         X                   Y                   Z')!=-1:
+                                        out.write('\n     ATOMS\n')
                                         should_write=True
 
+                                        
                             if os.stat(path_output).st_size >= 100:
                                 print(f'file {fileName}.txt was generated sucessfully.')
                             else:
@@ -57,6 +70,45 @@ class Extractor:
             raise ValueError("There is no files with .log extension.")
 
         return
+    # def op_extractor(self, name_dir: str): 
+    #     '''Extracts only the data regarding Mulliken Atomic Overlap Populations from .out file. Saves .txt file. Returns None.
+         
+    #     Arguments:
+    #         name_dir(str) = Name of the output directory'''
+    #     try:
+    #         for root, dirs, files in os.walk(name_dir):
+    #             for file in files:
+    #                 if file.endswith(".log"):
+    #                     fileName = re.sub(".log", "", file)
+    #                     path = root + "\\" + file 
+    #                     path_output = root + "\\" + fileName + ".txt"
+
+    #                     #https://stackoverflow.com/questions/61172255/how-to-slice-data-from-a-text-file-given-the-desired-range-of-lines
+    #                     with open(path, encoding='utf8') as f:
+    #                         with open(path_output, "w") as out:
+    #                             print(f'Analyzing {file}...')
+    #                             out.write(f'{file}\n')
+    #                             out.write('          ----- MULLIKEN ATOMIC OVERLAP POPULATIONS -----\n')
+    #                             should_write=False
+    #                             for x, line in enumerate(f):
+    #                                 if line.find('          ----- MULLIKEN ATOMIC OVERLAP POPULATIONS -----')!=-1:
+    #                                     should_write=False
+    #                                 if should_write:
+    #                                     out.write(line)
+    #                                 if line.find('               ----- POPULATIONS IN EACH AO -----')!=-1:
+    #                                     should_write=True
+
+    #                         if os.stat(path_output).st_size >= 100:
+    #                             print(f'file {fileName}.txt was generated sucessfully.')
+    #                         else:
+    #                             f.close()
+    #                             print(f'WARNING: {fileName} could not be generated.')
+    #                             os.remove(path_output)
+                                                
+    #     except ValueError:
+    #         raise ValueError("There is no files with .log extension.")
+
+    #     return
 
     def rx_extractor(self, name_dir):
         '''Extracts the Rx value organized by higher to lower value. Returns a dataframe.
