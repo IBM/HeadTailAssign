@@ -32,7 +32,7 @@ class Extractor:
                         path_output = root + "\\" + fileName + ".txt"
 
                         #https://stackoverflow.com/questions/61172255/how-to-slice-data-from-a-text-file-given-the-desired-range-of-lines
-                        with open(path, encoding='utf8') as f:
+                        with open(path, encoding="latin-1") as f:
                             with open(path_output, "w") as out:
                                 print(f'Analyzing {file}...')
                                 out.write(f'{file}\n')
@@ -92,6 +92,11 @@ class Extractor:
                             atoms = helper._get_atoms_list(path)
                             n_id = helper._get_id(path)
                             a_population = helper._get_a_population(path, n_orbitals, n_id)
+
+                            # print(n_orbitals)
+                            # print(atoms)
+                            # print(n_id)
+                            # (print(a_population))
 
                             results = helper._get_dataframe(atoms, n_id, a_population, path_output)
 
