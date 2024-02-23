@@ -1,6 +1,7 @@
 import pandas as pd
 import csv
 import re
+import math
 
 
 class Helper:
@@ -87,11 +88,15 @@ class Helper:
         Arguments:
             path: path file with the information atomic population. UPDATE HERE
             '''
+
         with open(path, encoding='utf8') as f:
             o_p = []
             should_append = False
             count = 0
             div_rest = (int(n_orbitals[0]) % 5)
+            div = math.ceil(int(n_orbitals[0])/5)
+            if div_rest == 0:
+                div_rest = 5
             n_id_compare = []
             for x, line in enumerate(f):
                 
@@ -104,7 +109,7 @@ class Helper:
                         elif n_id_compare == n_id:
                             count += 1
                             n_id_compare = []
-                        if count == div_rest -1:
+                        if count == div-1:
                             if n == c_line:
                                 if div_rest == 1:
                                     o_p.append(line[18:27].replace("\n", ""))
@@ -118,7 +123,6 @@ class Helper:
                                     o_p.append(line[62:71].replace("\n", ""))
                 if line.find('---------------------     ATOMIC MULLIKEN POPULATION IN EACH MOLECULAR ORBITAL')!=-1:
                     should_append=True
-            
         return o_p
 
     def _change_atom_ID(self, atomId):
