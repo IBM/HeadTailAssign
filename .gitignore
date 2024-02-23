@@ -15,3 +15,5 @@ archive/
 output-directory_allclasses_final/
 output-directory/
 compare_results/
+input/
+output/
