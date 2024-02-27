@@ -328,7 +328,6 @@ class AssignerHelper:
         Arguments:
             org_function(list): organic functions obtained on the get_class method.
         '''
-        print(org_function)
         classes = []
         if bool(re.findall('^\[\[', str(org_function))) == False:
             if org_function == ['alkene']:
@@ -397,7 +396,6 @@ class AssignerHelper:
             for i in co_id_number:
                 functions = []
                 for j in i:
-                    print(f'functions {functions}')
                     for atom_mapping, o_f in zip(atom_map, org_functions):
                         functions_n = []
                         functions_e = []
@@ -509,7 +507,6 @@ class AssignerHelper:
                                     functions = functions_a
                                 
                                 functions = [x for x in functions if x != []]
-                                #print(f'functions {functions}')
                                 for key, value in classes_dict.items():
                                     for v in value:
 
@@ -518,7 +515,6 @@ class AssignerHelper:
                                                 classes.append('polyamide')
                                                 break 
                                             else:
-                                                print("HERE")           
                                                 classes.append(key)
                                                 break
 
@@ -616,7 +612,6 @@ class AssignerHelper:
                 if len(classes_final) == 1:
                     break
 
-        print(f'classes_final {classes_final}')
         return classes_final
 
     def _open_ring(self, classes, smiles):
@@ -715,8 +710,8 @@ class AssignerHelper:
             for atom_map, o_f in zip(atom_mapping, org_functions):
                 if o_f == 'alkene':
                     try:
-                        head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\*\d{1,2}]|\))\])|H\d|H', '', str(tail)) # get only ] near head and tail tag
                         clean_vinyl = re.sub('(?:^|(?<=\(\[:\*h\]\))=)|(?:^|(?<=O\))=)|(?:^|(?<=C\))=)', '', str(cleanSmiles)) 
                         head_tail.append(clean_vinyl)
@@ -725,8 +720,8 @@ class AssignerHelper:
                         break
                 if o_f == 'alkyne':
                     try:
-                        head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\*\d{1,2}]|\))\])|H\d|H', '', str(tail)) # get only ] near head and tail tag
                         clean_vinyl = re.sub('#', '', str(cleanSmiles)) 
                         head_tail.append(clean_vinyl)
@@ -740,37 +735,37 @@ class AssignerHelper:
                 try:
                     if len(org_functions) == 1:
                         if o_f == 'primary_amine':
-                            head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                            tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([*:2])', str(head))
+                            head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                            tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             head_tail.append(cleanSmiles)
                             break
                     elif len(org_functions) >= 2:    
                         if o_f == 'primary_amine':
                             if org_functions[-1] == 'primary_amine':
-                                head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                                tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([*:2])', str(head))
+                                head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                                tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*t])', str(head))
                                 cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                                 head_tail.append(cleanSmiles)
                                 break
                             else:                                                
-                                head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
+                                head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
                         elif org_functions[0]== 'aliphatic_alcohol':
                             if (o_f == 'aliphatic_alcohol'):# & (head == ""):
-                                head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:1])', str(smiles))
+                                head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
                         if o_f == 'acid_halide':
-                            tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                            tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             clean_carbonyl = re.sub('(?<=\(=O\))Cl|\(Cl\)|(?<=\(=O\))Cl|Cl(?=C)', '', str(cleanSmiles))
                             head_tail.append(clean_carbonyl)
                         elif o_f == 'carboxilic_acid':                            
-                            tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                            tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             clean_carbonyl = re.sub('(^O)|(?:^|(?<=\(=O\))O)', '', str(cleanSmiles))
                             head_tail.append(clean_carbonyl)
                         if o_f == 'aliphatic_alkyl_halide':
-                            head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([*:1])', str(smiles))
-                            tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:2])', str(head))
+                            head = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*h])', str(smiles))
+                            tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             clean_carbonyl = re.sub('(?<=\(=O\))Cl|\(Cl\)|(?<=\(=O\))Cl|Cl(?=C)', '', str(cleanSmiles))
                             head_tail.append(clean_carbonyl)
@@ -782,8 +777,8 @@ class AssignerHelper:
 
                 if  o_f == 'NC=O-heterocycle': #for heterocycles
                     try:
-                        head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         open_smiles = self._open_ring(classes, cleanSmiles)
                         open_smiles1 = reduce(lambda x, y: x+y, open_smiles)
@@ -798,30 +793,30 @@ class AssignerHelper:
                 try:
                     if len(org_functions) == 1:
                         if o_f == 'aliphatic_alcohol':
-                            head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                            tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([*:2])', str(head))
+                            head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                            tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             head_tail.append(cleanSmiles)
                             break
                     elif len(org_functions) >= 2:
                         if o_f == 'aliphatic_alcohol':
-                            head = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([*:1])', str(smiles))
+                            head = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*h])', str(smiles))
                         if o_f == 'carboxilic_acid':
                             if 'O-heterocycle' in org_functions:
-                                head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:1])', str(smiles))
-                                tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:2])', str(head))
+                                head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
+                                tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                                 cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                                 open_smiles = self._open_ring(classes, cleanSmiles)
                                 open_smiles1 = reduce(lambda x, y: x+y, open_smiles)
                                 head_tail.append(open_smiles1)
                             else:
-                                tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:2])', str(head))
+                                tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
                                 cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                                 clean_carbonyl = re.sub('(^O)|(?:^|(?<=\(=O\))O)', '', str(cleanSmiles))
                                 head_tail.append(clean_carbonyl)
                         if o_f == 'aromatic_alcohol':
-                            head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:1])', str(smiles))
-                            tail = re.sub(f'\:{atom_map[8]+1}(?!\d)', '([*:2])', str(head))
+                            head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
+                            tail = re.sub(f'\:{atom_map[8]+1}(?!\d)', '([:*t])', str(head))
                             cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                             head_tail.append(cleanSmiles)
                 except IndexError:
@@ -832,13 +827,13 @@ class AssignerHelper:
             for atom_map, o_f in zip(atom_mapping, org_functions):
                 try:
                     if o_f == 'aliphatic_alcohol':
-                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         head_tail.append(cleanSmiles)
                     elif o_f == 'cyanate':
-                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[4]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[4]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         clean_double_bond = re.sub('=(?=N)|(?<=N)=', '', str(cleanSmiles))
                         head_tail.append(clean_double_bond)
@@ -849,10 +844,9 @@ class AssignerHelper:
         if classes == 'polyether':
             for atom_map, o_f in zip(atom_mapping, org_functions):
                 try:
-                    print(o_f)
                     if o_f == 'O-heterocycle':        
-                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([*:1])', str(smiles))
-                        tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
+                        tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         open_smiles = self._open_ring(classes, cleanSmiles) #check if all polyethers are going through this step
                         if bool(re.search('(?<=^C)1', str(open_smiles))) == True:
@@ -861,9 +855,8 @@ class AssignerHelper:
                         else:
                             head_tail.append(open_smiles)
                     if o_f == 'carbonyl':     
-                        print(smiles)   
-                        head = re.sub(f'CH\d\:{atom_map[0]+1}(?!\d)', r'([*:1])\g<0>', str(smiles))
-                        tail = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([*:2])', str(head))
+                        head = re.sub(f'CH\d\:{atom_map[0]+1}(?!\d)', r'([:*h])\g<0>', str(smiles))
+                        tail = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         head_tail.append(cleanSmiles)
                 except IndexError:

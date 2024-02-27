@@ -442,8 +442,11 @@ class Assigner:
                     ##### GET ATOM MAPPING ######
                     smiles_head_tail = helper._get_atom_mapping(smiles, atom_maps, org_functions, classes)
                     if smiles_head_tail:
-                        smiles_head_tail_reduce = reduce(lambda x, y: x+y, smiles_head_tail)
-                        head_tail.append(smiles_head_tail_reduce)
+                        if type(smiles_head_tail) == 'list':
+                            smiles_head_tail_reduce = reduce(lambda x, y: x+y, smiles_head_tail)
+                            head_tail.append(smiles_head_tail_reduce)
+                        else:
+                            head_tail.append(smiles_head_tail)
                     else:
                         head_tail.append('not recognized')
 
