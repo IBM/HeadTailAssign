@@ -42,6 +42,7 @@ class Assigner:
             'aliphatic_alkyl_halide': 'C[F,Cl,Br,I]',
             'aromatic_alkyl_halide': 'c:cC([F,Cl,Br,I])=O', #'c:c[F,Cl,Br,I]',
             'thiol': 'C[SH]',
+            'carbonyl': 'C(=O)',
             'aldehyde': 'C(C([H])=O)',
             'ketone': '[#6][CX3](=O)[#6]',
             'ester': '[C,c](C([O][C])=O)',
