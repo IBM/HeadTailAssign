@@ -328,6 +328,7 @@ class AssignerHelper:
         Arguments:
             org_function(list): organic functions obtained on the get_class method.
         '''
+        print(org_function)
         classes = []
         if bool(re.findall('^\[\[', str(org_function))) == False:
             if org_function == ['alkene']:
@@ -348,6 +349,7 @@ class AssignerHelper:
                 classes.append('polyurethane') 
             elif org_function == ['eter', 'O-heterocycle']: 
                 classes.append('polyether')
+
         # EDIT HERE FOR OTHER CLASSES
         else:
             if org_function == [['alkene'], ['alkene']]:
@@ -376,16 +378,17 @@ class AssignerHelper:
 
             classes_dict = {'vinyl':[[['alkene'], ['alkene']], [['alkene'], ['alkene']]],#
                     'vinyl_A':[[['alkyne'], ['alkyne']], [['alkyne'], ['alkyne']]],#
-                    'polyamide':[[['primary_amine'], ['aliphatic_alcohol', 'carboxilic_acid']], 
-                                [['aliphatic_alcohol', 'carboxilic_acid'], ['primary_amine']]],#
+                    'polyamide':[[['primary_amine'], ['aliphatic_alcohol', 'carboxilic_acid']]], 
+                                #[['aliphatic_alcohol', 'carboxilic_acid'], ['primary_amine']]],#
                     'polyamide_A':[[['primary_amine'], ['aliphatic_alkyl_halide', 'acid_halide']], 
-                                [['aliphatic_alkyl_halide', 'acid_halide'], ['primary_amine']], 
+                                #[['aliphatic_alkyl_halide', 'acid_halide'], ['primary_amine']], 
                                 [['primary_amine'], ['aliphatic_alkyl_halide']]],
                     'polyester':[[['aliphatic_alcohol'], ['aliphatic_alcohol', 'carboxilic_acid']], 
-                                [['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
+                                #[['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
                                 [['carboxilic_acid'], ['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
                                 [['benzene', 'aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']]],#
-                    'polyurethane':[[['aliphatic_alcohol'], ['cyanate']]],
+                    'polyurethane':[[['aliphatic_alcohol'], ['cyanate']],
+                                    [['eter'], ['cyanate'], ['aliphatic_alcohol']]],
             }
             classes_final = []
             classes = []
@@ -393,6 +396,7 @@ class AssignerHelper:
             for i in co_id_number:
                 functions = []
                 for j in i:
+                    print(f'functions {functions}')
                     for atom_mapping, o_f in zip(atom_map, org_functions):
                         functions_n = []
                         functions_e = []
@@ -504,14 +508,16 @@ class AssignerHelper:
                                     functions = functions_a
                                 
                                 functions = [x for x in functions if x != []]
+                                #print(f'functions {functions}')
                                 for key, value in classes_dict.items():
                                     for v in value:
 
-                                        if v == functions:
+                                        if sorted(v) == sorted(functions):
                                             if key == 'polyamide_A':
                                                 classes.append('polyamide')
                                                 break 
-                                            else:           
+                                            else:
+                                                print("HERE")           
                                                 classes.append(key)
                                                 break
 
@@ -608,6 +614,8 @@ class AssignerHelper:
 
                 if len(classes_final) == 1:
                     break
+
+        print(f'classes_final {classes_final}')
         return classes_final
 
     def _open_ring(self, classes, smiles):
