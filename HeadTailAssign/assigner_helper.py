@@ -344,6 +344,8 @@ class AssignerHelper:
                 classes.append('polyester') 
             elif org_function == ['aliphatic_alcohol', 'carboxilic_acid']:
                 classes.append('polyester') 
+            elif org_function == ['aliphatic_alcohol', 'carbonyl', 'carboxilic_acid']:
+                classes.append('polyester') 
             elif org_function == ['aliphatic_alcohol', 'cyanate']:
                 classes.append('polyurethane') 
             elif org_function == ['eter', 'O-heterocycle']: 
