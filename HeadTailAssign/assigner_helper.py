@@ -663,7 +663,9 @@ class AssignerHelper:
 
             else:
                 smiles_open.append('error03: could not open ring')
-        return smiles_open
+        
+        smiles_open_reduce = reduce(lambda x, y: x+y, smiles_open)
+        return smiles_open_reduce
 
     def _sanitize_polymer(self, classes, smiles):
         '''
