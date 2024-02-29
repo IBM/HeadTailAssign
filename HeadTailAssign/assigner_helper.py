@@ -848,7 +848,7 @@ class AssignerHelper:
         if classes == 'polyether':
             for atom_map, o_f in zip(atom_mapping, org_functions):
                 try:
-                    if o_f == 'O-heterocycle':        
+                    if o_f == 'O-heterocycle':
                         head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
                         tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
@@ -858,9 +858,13 @@ class AssignerHelper:
                             head_tail.append(sanitize)
                         else:
                             head_tail.append(open_smiles)
-                    if o_f == 'carbonyl':     
+                    if org_functions == ['carbonyl']:  
+                        print(smiles)   
                         head = re.sub(f'CH\d\:{atom_map[0]+1}(?!\d)', r'([:*h])\g<0>', str(smiles))
+                        print(head, atom_map)
                         tail = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*t])', str(head))
+                        print(tail, atom_map)
+                        print()
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         head_tail.append(cleanSmiles)
                 except IndexError:
