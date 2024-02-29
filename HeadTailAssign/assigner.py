@@ -521,7 +521,6 @@ class Assigner:
         
         if notation == 'usual':
             head_tail_list = self._change_headtail_notation(head_tail_list)
-        # BUG: This functionality is still not working
         if structure == 'oligomer':
             head_tail_list = self._create_oligomer(df, head_tail_list)
 
@@ -578,14 +577,15 @@ class Assigner:
                                 else:
                                     monomers.insert(1, Chem.MolFromSmiles(m_rn))
                         smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][Rn]>>([C:1]([N:3])=[O:2])')
+                        # if monomers == len(2):
+                        #     break
 
                     if classes == 'polyester':
                         for m in monomer:
                             m_rn = re.sub('\*:2|\*:1', 'Rn', m)
-                            # BUG: This is not working
-                            # TODO: Change Rn to head tail notation
+                    #         # TODO: Change Rn to head tail notation
                             print(m_rn)
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('C(=O)([Rn])'))) == True:
+                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
                                 if monomers == []:
                                     monomers.append(Chem.MolFromSmiles(m_rn))
                                 else:
@@ -596,11 +596,12 @@ class Assigner:
                                     monomers.append(Chem.MolFromSmiles(m_rn))
                                 else:
                                     monomers.insert(1, Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][Rn]>>([C:1]([O:2])=[O:3])')
+                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][Rn]>>[C:1](=[O:2])[O:3]')
 
-                    if classes == 'polyurethane':
+                    elif classes == 'polyurethane':
                         for m in monomer:
                             m_rn = re.sub('\*:2|\*:1', 'Rn', m)
+                            
                             if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('[N](C([Rn])=O)'))) == True:
                                 if monomers == []:
                                     monomers.append(Chem.MolFromSmiles(m_rn))
