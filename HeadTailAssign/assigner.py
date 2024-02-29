@@ -411,6 +411,7 @@ class Assigner:
         Arguments:
             df(dataframe): the input dataframe already modified.
             name_dir(str): name of the working directory.
+            notation(str): output format. If 'usual' outputs usual notation for ligands (*:1 and *:2)
             structure(str): output format. May be monomer or oligomer.
         '''
         os.chdir(name_dir)
@@ -528,8 +529,12 @@ class Assigner:
         
         return head_tail_list
     
-    def _change_headtail_notation(self, head_tail_list):
-
+    def _change_headtail_notation(self, head_tail_list) -> list:
+        '''Change head and tail to usual notation. Returns a list.
+        
+        Arguments:
+            head_tail_list(list): the list of monomers with head and tail assigned.
+        '''
         new_notation = []
 
         for monomer in head_tail_list:
@@ -554,8 +559,12 @@ class Assigner:
 
         return new_notation
 
-    def _create_oligomer(self, df, head_tail_list):
-        # return oligomer
+    def _create_oligomer(self, df, head_tail_list) -> list:
+        '''Create oligomers from the list of monomers. Returns a list.
+        
+        Arguments:
+            head_tail_list(list): the list of monomers with head and tail assigned.
+        '''
         oligomer_list = []
         for name, monomer, classes in zip(df['polymer_id'], head_tail_list, df['classes']):
 
@@ -577,14 +586,11 @@ class Assigner:
                                 else:
                                     monomers.insert(1, Chem.MolFromSmiles(m_rn))
                         smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][Rn]>>([C:1]([N:3])=[O:2])')
-                        # if monomers == len(2):
-                        #     break
 
                     if classes == 'polyester':
                         for m in monomer:
                             m_rn = re.sub('\*:2|\*:1', 'Rn', m)
-                    #         # TODO: Change Rn to head tail notation
-                            print(m_rn)
+                            # TODO: Change Rn to head tail notation
                             if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
                                 if monomers == []:
                                     monomers.append(Chem.MolFromSmiles(m_rn))
