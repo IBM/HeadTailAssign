@@ -804,7 +804,7 @@ class AssignerHelper:
                             break
                     elif len(org_functions) >= 2:
                         if o_f == 'aliphatic_alcohol':
-                            head = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*h])', str(smiles))
+                            head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
                         if o_f == 'carboxilic_acid':
                             if 'O-heterocycle' in org_functions:
                                 head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
@@ -814,7 +814,7 @@ class AssignerHelper:
                                 open_smiles1 = reduce(lambda x, y: x+y, open_smiles)
                                 head_tail.append(open_smiles1)
                             else:
-                                tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
+                                tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                                 cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                                 clean_carbonyl = re.sub('(^O)|(?:^|(?<=\(=O\))O)', '', str(cleanSmiles))
                                 head_tail.append(clean_carbonyl)
