@@ -573,7 +573,6 @@ class Assigner:
                     monomers = []
                     if classes == 'polyamide':
                         for m in monomer:
-                            print(m)
                             m_rn_h: str = re.sub('\*:1', 'XeH', m)
                             m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
                             if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
@@ -591,7 +590,6 @@ class Assigner:
 
                     if classes == 'polyester':
                         for m in monomer:
-                            print(m)
                             m_rn_h: str = re.sub('\*:1', 'XeH', m)
                             m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
 

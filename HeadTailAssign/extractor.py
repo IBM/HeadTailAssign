@@ -93,11 +93,6 @@ class Extractor:
                             n_id = helper._get_id(path)
                             a_population = helper._get_a_population(path, n_orbitals, n_id)
 
-                            # print(n_orbitals)
-                            # print(atoms)
-                            # print(n_id)
-                            # (print(a_population))
-
                             results = helper._get_dataframe(atoms, n_id, a_population, path_output)
 
         except ValueError:

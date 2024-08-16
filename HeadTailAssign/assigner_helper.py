@@ -394,7 +394,6 @@ class AssignerHelper:
             }
             classes_final = []
             classes = []
-            
             for i in co_id_number:
                 functions = []
                 for j in i:
@@ -859,12 +858,8 @@ class AssignerHelper:
                         else:
                             head_tail.append(open_smiles)
                     if org_functions == ['carbonyl']:  
-                        print(smiles)   
                         head = re.sub(f'CH\d\:{atom_map[0]+1}(?!\d)', r'([:*h])\g<0>', str(smiles))
-                        print(head, atom_map)
                         tail = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*t])', str(head))
-                        print(tail, atom_map)
-                        print()
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                         head_tail.append(cleanSmiles)
                 except IndexError:
