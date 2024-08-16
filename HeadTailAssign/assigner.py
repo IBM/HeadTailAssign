@@ -573,59 +573,66 @@ class Assigner:
                     monomers = []
                     if classes == 'polyamide':
                         for m in monomer:
-                            m_rn = re.sub('\*:2|\*:1', 'Rn', m)
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
+                            print(m)
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
                                 if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
                                 else:
-                                    monomers.insert(0, Chem.MolFromSmiles(m_rn))
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
 
-                            elif bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('N[Rn]'))) == True:
+                            elif bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('N[XeH]'))) == True:
                                 if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
                                 else:
-                                    monomers.insert(1, Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][Rn]>>([C:1]([N:3])=[O:2])')
+                                    monomers.insert(1, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][XeH]>>([C:1]([N:3])=[O:2])')
 
                     if classes == 'polyester':
                         for m in monomer:
-                            m_rn = re.sub('\*:2|\*:1', 'Rn', m)
-                            # TODO: Change Rn to head tail notation
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
-                                if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
-                                else:
-                                    monomers.insert(0, Chem.MolFromSmiles(m_rn))
+                            print(m)
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
 
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('O[Rn]'))) == True:
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
                                 if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
                                 else:
-                                    monomers.insert(1, Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][Rn]>>[C:1](=[O:2])[O:3]')
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
+
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('O[XeH]'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(1, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][XeH]>>[C:1](=[O:2])[O:3]')
 
                     elif classes == 'polyurethane':
                         for m in monomer:
-                            m_rn = re.sub('\*:2|\*:1', 'Rn', m)
-                            
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('[N](C([Rn])=O)'))) == True:
-                                if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
-                                else:
-                                    monomers.insert(0, Chem.MolFromSmiles(m_rn))
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
 
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('CO[Rn]'))) == True:
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('[N](C([Rn])=O)'))) == True:
                                 if monomers == []:
-                                    monomers.append(Chem.MolFromSmiles(m_rn))
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
                                 else:
-                                    monomers.insert(0, Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('[N:1]([C:2]([Rn])=[O:3]).[C:4][O:5][Rn]>>[N:1]([C:2]([O:5][C:4])=[O:3])')
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
+
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('CO[XeH]'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('[N:1]([C:2]([Rn])=[O:3]).[C:4][O:5][XeH]>>[N:1]([C:2]([O:5][C:4])=[O:3])')
 
                     oligomer = smarts.RunReactants(monomers)
 
                     result = []
                     for i in range(len(oligomer)):
-                        mol_monomer = Chem.MolToSmiles(oligomer[i][0])
+                        m_r_h = Chem.MolToSmiles(oligomer[i][0])
+                        m_h: str = re.sub('XeH', '*:1', m_r_h)
+                        mol_monomer = re.sub('Rn', '*:2', m_h)
                         if mol_monomer not in result:
                             result.append(mol_monomer)
                     oligomer_list.append(result)
@@ -634,5 +641,7 @@ class Assigner:
 
             else:
                 oligomer_list.append(monomer)
+                
+        oligomer_result = [element for tupl in oligomer_list for element in tupl]
 
-        return oligomer_list
+        return oligomer_result
