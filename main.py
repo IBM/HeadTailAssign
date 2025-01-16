@@ -3,7 +3,6 @@ import csv
 import os
 import sys
 
-
 from HeadTailAssign.assigner import Assigner
 from HeadTailAssign.gamess import GAMESS
 from HeadTailAssign.directory import Directory
@@ -58,7 +57,7 @@ print("\n########## GENERATING GAMESS INPUT #############\n")
 gamess = GAMESS()
 gamess.generate_gamess_input(df, name_dir, 'scf', 'sto3g', 'uff', 5000)
 
-## Run GAMESS
+# Run GAMESS
 
 print("\n########## RUNNING GAMESS #############\n")
 gamess.run_gamess_for_files(name_dir)
@@ -87,7 +86,7 @@ mechanism = assign.get_mechanism(df, name_dir)
 df['mechanism'] = mechanism
 
 ## Get head and tail
-head_tail = assign.get_head_tail(df, name_dir)
+head_tail = assign.get_head_tail(df, name_dir, notation='usual', structure='oligomer')
 df['head_tail'] = head_tail
 print(df)
 
