@@ -2,16 +2,11 @@
 __pycache__/
 
 # Data
-data_ht.csv
-data_polyamide.csv
-results_allclasses_final.csv
 results.csv
 
 # Jupyter
-visualization.ipynb
 
 # Folder
 archive/
-output-directory_allclasses_final/
-output-directory/
-compare_results/
+input/
+output/

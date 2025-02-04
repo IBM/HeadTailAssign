@@ -42,6 +42,7 @@ class Assigner:
             'aliphatic_alkyl_halide': 'C[F,Cl,Br,I]',
             'aromatic_alkyl_halide': 'c:cC([F,Cl,Br,I])=O', #'c:c[F,Cl,Br,I]',
             'thiol': 'C[SH]',
+            'carbonyl': 'C(=O)',
             'aldehyde': 'C(C([H])=O)',
             'ketone': '[#6][CX3](=O)[#6]',
             'ester': '[C,c](C([O][C])=O)',
@@ -404,12 +405,13 @@ class Assigner:
 
         return mechanism_reduce 
 
-    def get_head_tail(self, df, name_dir, structure='monomer') -> list:
+    def get_head_tail(self, df, name_dir, notation='usual', structure='monomer') -> list:
         '''Get head and tail of polymers. Returns a list.
         
         Arguments:
             df(dataframe): the input dataframe already modified.
             name_dir(str): name of the working directory.
+            notation(str): output format. If 'usual' outputs usual notation for ligands (*:1 and *:2)
             structure(str): output format. May be monomer or oligomer.
         '''
         os.chdir(name_dir)
@@ -441,8 +443,11 @@ class Assigner:
                     ##### GET ATOM MAPPING ######
                     smiles_head_tail = helper._get_atom_mapping(smiles, atom_maps, org_functions, classes)
                     if smiles_head_tail:
-                        smiles_head_tail_reduce = reduce(lambda x, y: x+y, smiles_head_tail)
-                        head_tail.append(smiles_head_tail_reduce)
+                        if type(smiles_head_tail) == 'list':
+                            smiles_head_tail_reduce = reduce(lambda x, y: x+y, smiles_head_tail)
+                            head_tail.append(smiles_head_tail_reduce)
+                        else:
+                            head_tail.append(smiles_head_tail)
                     else:
                         head_tail.append('not recognized')
 
@@ -515,58 +520,117 @@ class Assigner:
             else:
                 head_tail_list.append('not recognized')
         
+        if notation == 'usual':
+            head_tail_list = self._change_headtail_notation(head_tail_list)
         if structure == 'oligomer':
             head_tail_list = self._create_oligomer(df, head_tail_list)
 
         os.chdir('../')
         
         return head_tail_list
+    
+    def _change_headtail_notation(self, head_tail_list) -> list:
+        '''Change head and tail to usual notation. Returns a list.
+        
+        Arguments:
+            head_tail_list(list): the list of monomers with head and tail assigned.
+        '''
+        new_notation = []
 
-    def _create_oligomer(self, df, head_tail_list):
-        # return oligomer
+        for monomer in head_tail_list:
+            if type(monomer) == list:
+                try:
+                    new_notation_monomers = []
+                    for m in monomer:
+                        m_h = re.sub('\:\*h', '*:1', m)
+                        m_t = re.sub('\:\*t', '*:2', m_h)
+                        new_notation_monomers.append(m_t)
+                    
+                    new_notation.append(new_notation_monomers)
+                except: 
+                    new_notation.append(f'WARNING: not translated - {monomer}')
+            else:
+                try:
+                    m_h = re.sub('\:\*h', '*:1', m)
+                    m_t = re.sub('\:\*t', '*:2', m_h)
+                    new_notation.append(m_t)
+                except:
+                    new_notation.append(f'WARNING: not translated - {monomer}')
+
+        return new_notation
+
+    def _create_oligomer(self, df, head_tail_list) -> list:
+        '''Create oligomers from the list of monomers. Returns a list.
+        
+        Arguments:
+            head_tail_list(list): the list of monomers with head and tail assigned.
+        '''
         oligomer_list = []
         for name, monomer, classes in zip(df['polymer_id'], head_tail_list, df['classes']):
+
             if type(monomer) == list:
                 try:
                     monomers = []
                     if classes == 'polyamide':
                         for m in monomer:
-                            m_rn = re.sub('\:\*t|\:\*h', 'Rn', m)
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('[C,c](C([Rn])=O)'))) == True:
-                                monomers.append(Chem.MolFromSmiles(m_rn))
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
 
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('N[Rn]'))) == True:
-                                monomers.append(Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][Rn]>>([C:1]([N:3])=[O:2])')
+                            elif bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('N[XeH]'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(1, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[N:3][XeH]>>([C:1]([N:3])=[O:2])')
 
                     if classes == 'polyester':
                         for m in monomer:
-                            m_rn = re.sub('\:\*t|\:\*h', 'Rn', m)
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('[C,c](C([Rn])=O)'))) == True:
-                                monomers.append(Chem.MolFromSmiles(m_rn))
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
 
-                            if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('O[Rn]'))) == True:
-                                monomers.append(Chem.MolFromSmiles(m_rn))
-                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][Rn]>>([C:1]([O:2])=[O:3])')
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('C([Rn])(=O)'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
 
-                    # if classes == 'polyurethane':
-                    #     for m in monomer:
-                            
-                    #         m_rn = re.sub('\:\*t|\:\*h', 'Rn', m)
-                    #         print(f'polyurethane{m_rn}')
-                    #         if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('[N](C([Rn])=O)'))) == True:
-                    #             monomers.append(Chem.MolFromSmiles(m_rn))
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('O[XeH]'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(1, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('([C:1]([Rn])=[O:2]).[O:3][XeH]>>[C:1](=[O:2])[O:3]')
 
-                    #         if bool(Chem.MolFromSmiles(m_rn).GetSubstructMatches(Chem.MolFromSmarts('CO[Rn]'))) == True:
-                    #             monomers.append(Chem.MolFromSmiles(m_rn))
-                    #     smarts = AllChem.ReactionFromSmarts('[N](C([Rn])=O).CO[Rn]>>[N](C([Rn])=O)')
-                        #smarts = AllChem.ReactionFromSmarts('[N:1]([C:2]([Rn])=[O:3]).[C:4][O:5][Rn]>>[N:1]([C:2]([O:5][C:4])=[O:3])')
+                    elif classes == 'polyurethane':
+                        for m in monomer:
+                            m_rn_h: str = re.sub('\*:1', 'XeH', m)
+                            m_rn_tn = re.sub('\*:2', 'Rn', m_rn_h)
+
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('[N](C([Rn])=O)'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
+
+                            if bool(Chem.MolFromSmiles(m_rn_tn).GetSubstructMatches(Chem.MolFromSmarts('CO[XeH]'))) == True:
+                                if monomers == []:
+                                    monomers.append(Chem.MolFromSmiles(m_rn_tn))
+                                else:
+                                    monomers.insert(0, Chem.MolFromSmiles(m_rn_tn))
+                        smarts = AllChem.ReactionFromSmarts('[N:1]([C:2]([Rn])=[O:3]).[C:4][O:5][XeH]>>[N:1]([C:2]([O:5][C:4])=[O:3])')
 
                     oligomer = smarts.RunReactants(monomers)
 
                     result = []
                     for i in range(len(oligomer)):
-                        mol_monomer = Chem.MolToSmiles(oligomer[i][0])
+                        m_r_h = Chem.MolToSmiles(oligomer[i][0])
+                        m_h: str = re.sub('XeH', '*:1', m_r_h)
+                        mol_monomer = re.sub('Rn', '*:2', m_h)
                         if mol_monomer not in result:
                             result.append(mol_monomer)
                     oligomer_list.append(result)
@@ -575,5 +639,7 @@ class Assigner:
 
             else:
                 oligomer_list.append(monomer)
+                
+        oligomer_result = [element for tupl in oligomer_list for element in tupl]
 
-        return oligomer_list
+        return oligomer_result

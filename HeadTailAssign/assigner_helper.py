@@ -344,9 +344,13 @@ class AssignerHelper:
                 classes.append('polyester') 
             elif org_function == ['aliphatic_alcohol', 'carboxilic_acid']:
                 classes.append('polyester') 
+            elif org_function == ['aliphatic_alcohol', 'carbonyl', 'carboxilic_acid']:
+                classes.append('polyester') 
             elif org_function == ['aliphatic_alcohol', 'cyanate']:
                 classes.append('polyurethane') 
             elif org_function == ['eter', 'O-heterocycle']: 
+                classes.append('polyether')
+            elif org_function == ['carbonyl']:
                 classes.append('polyether')
         # EDIT HERE FOR OTHER CLASSES
         else:
@@ -376,20 +380,20 @@ class AssignerHelper:
 
             classes_dict = {'vinyl':[[['alkene'], ['alkene']], [['alkene'], ['alkene']]],#
                     'vinyl_A':[[['alkyne'], ['alkyne']], [['alkyne'], ['alkyne']]],#
-                    'polyamide':[[['primary_amine'], ['aliphatic_alcohol', 'carboxilic_acid']], 
-                                [['aliphatic_alcohol', 'carboxilic_acid'], ['primary_amine']]],#
+                    'polyamide':[[['primary_amine'], ['aliphatic_alcohol', 'carboxilic_acid']]], 
+                                #[['aliphatic_alcohol', 'carboxilic_acid'], ['primary_amine']]],#
                     'polyamide_A':[[['primary_amine'], ['aliphatic_alkyl_halide', 'acid_halide']], 
-                                [['aliphatic_alkyl_halide', 'acid_halide'], ['primary_amine']], 
+                                #[['aliphatic_alkyl_halide', 'acid_halide'], ['primary_amine']], 
                                 [['primary_amine'], ['aliphatic_alkyl_halide']]],
                     'polyester':[[['aliphatic_alcohol'], ['aliphatic_alcohol', 'carboxilic_acid']], 
-                                [['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
+                                #[['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
                                 [['carboxilic_acid'], ['aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']],
                                 [['benzene', 'aliphatic_alcohol', 'carboxilic_acid'], ['aliphatic_alcohol']]],#
-                    'polyurethane':[[['aliphatic_alcohol'], ['cyanate']]],
+                    'polyurethane':[[['aliphatic_alcohol'], ['cyanate']],
+                                    [['eter'], ['cyanate'], ['aliphatic_alcohol']]],
             }
             classes_final = []
             classes = []
-            
             for i in co_id_number:
                 functions = []
                 for j in i:
@@ -507,11 +511,11 @@ class AssignerHelper:
                                 for key, value in classes_dict.items():
                                     for v in value:
 
-                                        if v == functions:
+                                        if sorted(v) == sorted(functions):
                                             if key == 'polyamide_A':
                                                 classes.append('polyamide')
                                                 break 
-                                            else:           
+                                            else:
                                                 classes.append(key)
                                                 break
 
@@ -608,6 +612,7 @@ class AssignerHelper:
 
                 if len(classes_final) == 1:
                     break
+
         return classes_final
 
     def _open_ring(self, classes, smiles):
@@ -657,7 +662,9 @@ class AssignerHelper:
 
             else:
                 smiles_open.append('error03: could not open ring')
-        return smiles_open
+        
+        smiles_open_reduce = reduce(lambda x, y: x+y, smiles_open)
+        return smiles_open_reduce
 
     def _sanitize_polymer(self, classes, smiles):
         '''
@@ -796,7 +803,7 @@ class AssignerHelper:
                             break
                     elif len(org_functions) >= 2:
                         if o_f == 'aliphatic_alcohol':
-                            head = re.sub(f'\:{atom_map[3]+1}(?!\d)', '([:*h])', str(smiles))
+                            head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
                         if o_f == 'carboxilic_acid':
                             if 'O-heterocycle' in org_functions:
                                 head = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*h])', str(smiles))
@@ -806,7 +813,7 @@ class AssignerHelper:
                                 open_smiles1 = reduce(lambda x, y: x+y, open_smiles)
                                 head_tail.append(open_smiles1)
                             else:
-                                tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
+                                tail = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*t])', str(head))
                                 cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
                                 clean_carbonyl = re.sub('(^O)|(?:^|(?<=\(=O\))O)', '', str(cleanSmiles))
                                 head_tail.append(clean_carbonyl)
@@ -840,7 +847,7 @@ class AssignerHelper:
         if classes == 'polyether':
             for atom_map, o_f in zip(atom_mapping, org_functions):
                 try:
-                    if o_f == 'O-heterocycle':        
+                    if o_f == 'O-heterocycle':
                         head = re.sub(f'\:{atom_map[1]+1}(?!\d)', '([:*h])', str(smiles))
                         tail = re.sub(f'\:{atom_map[2]+1}(?!\d)', '([:*t])', str(head))
                         cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
@@ -850,6 +857,11 @@ class AssignerHelper:
                             head_tail.append(sanitize)
                         else:
                             head_tail.append(open_smiles)
+                    if org_functions == ['carbonyl']:  
+                        head = re.sub(f'CH\d\:{atom_map[0]+1}(?!\d)', r'([:*h])\g<0>', str(smiles))
+                        tail = re.sub(f'\:{atom_map[0]+1}(?!\d)', '([:*t])', str(head))
+                        cleanSmiles = re.sub('\:\d{1,2}|\[(?=[^\:\*])|(?:^|(?<=[\]|\d{1,2}]|\))\])|H\d|H', '', str(tail))
+                        head_tail.append(cleanSmiles)
                 except IndexError:
                         head_tail.append('error01: Could not recognize mapping')
                         break

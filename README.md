@@ -12,7 +12,7 @@ To create the working environment run:
 
 
 ```
-conda env create
+conda env create -f environment.yml
 ```
 
 GAMESS is also a requirement. This software was developed to use GAMESS version 2020-R2-pgiblas
