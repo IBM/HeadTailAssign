@@ -8,7 +8,7 @@ Welcome to the HTA non-interactive version, where you can learn how to use HTA t
 
 1. After downloading the package in a desired folder, create the conda environment as explained in the main [README.md](README.md)
 
-2. Use the [input.csv](examples\non-interactive\input.csv) provided in this folder to run HTA. If you would like to prepare your own input, please follow the same format as the example input.
+2. Use the [input.csv](examples/non-interactive/input.csv) provided in this folder to run HTA. If you would like to prepare your own input, please follow the same format as the example input.
 
 3. In the terminal, move to the folder where main.py is located. Be aware that you always have to be in the same folder as the main.py file, since python needs to find this file to run HTA.
 

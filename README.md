@@ -1,6 +1,6 @@
 # Head and Tail assignment
 
-![HTA logo](resources\images\hta_logo.png)
+![HTA logo](resources/images/hta_logo.png)
 
 A software that assign the head and tail of polymers.
 
@@ -18,11 +18,13 @@ conda env create -f environment.yml
 
 GAMESS is also a requirement. This software was developed to use GAMESS version 2020-R2 and 2024-R2
 
+At the moment, HTA only runs in Windows OS. We are working on adapting the package to also work in Linux OS
+
 ### **Running the script**
 
 #### Input file
 
-- The input file provided should contain all the data in one csv file. One example of input file containing the monomer precursors is located in [input.csv](example\non-interactive\input.csv)
+- The input file provided should contain all the data in one csv file. One example of input file containing the monomer precursors is located in [input.csv](example/non-interactive/input.csv)
 
 - If the user wants to provide the reaction smiles: The csv file should have two columns: 'name', 'reaction'. The 'name' indicates the name of the polymer and the 'reaction' should represent the polymerization reaction. One example of input for reactions:
 
@@ -44,7 +46,7 @@ GAMESS is also a requirement. This software was developed to use GAMESS version 
 To run the code, type at your terminal:
 
 ```
-python main.py [data]
+python main.py [data.csv]
 ```
 
 **More information about the functions can be found at the HeadTailAssign module**
