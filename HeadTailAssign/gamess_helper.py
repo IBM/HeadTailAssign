@@ -59,6 +59,15 @@ class GamessHelper:
             output_file.write(' $SCF DIRSCF=.TRUE. $END')
             output_file.write('\n')
 
+        if (runtype == 'b3lyp' and basis == '631g*'):
+            output_file.write('!   File created by MacMolPlt 7.7.2 \n')
+            output_file.write(' $CONTRL SCFTYP=RHF RUNTYP=ENERGY MAXIT=30 MULT=1 $END \n')
+            output_file.write(' $SYSTEM TIMLIM=10 MWORDS=50 MEMDDI=200  $END \n')
+            output_file.write(' $BASIS GBASIS=N31 NGAUSS=6  NDFUNC=3 NPFUNC=3 $END \n')
+            output_file.write(' $SCF DIRSCF=.TRUE. $END')
+            output_file.write(' $DFT DFTTYP=B3LYP $END')
+            output_file.write('\n')
+
         if (runtype == 'opt' and basis == 'pm3'):
             output_file.write('!   File created by MacMolPlt 7.7.2 \n')
             output_file.write(' $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE MAXIT=30 MULT=1 $END \n')
