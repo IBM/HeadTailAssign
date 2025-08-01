@@ -129,7 +129,7 @@ class GAMESS:
         '''
         for root, dirs, files in os.walk(name_dir):
             for file in files:
-                path = root + '\\' + file
+                path = root + '/' + file
                 if file.endswith(".inp"):
                     os.system('python ././run_gamess_job.py '+path+' 2')
 
