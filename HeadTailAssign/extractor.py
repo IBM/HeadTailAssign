@@ -28,8 +28,8 @@ class Extractor:
                 for file in files:
                     if file.endswith(".log"):
                         fileName = re.sub(".log", "", file)
-                        path = root + "\\" + file 
-                        path_output = root + "\\" + fileName + ".txt"
+                        path = root + "\\" + file # use / to run in linux
+                        path_output = root + "\\" + fileName + ".txt" # use / to run in linux
 
                         #https://stackoverflow.com/questions/61172255/how-to-slice-data-from-a-text-file-given-the-desired-range-of-lines
                         with open(path, encoding="latin-1") as f:
@@ -82,8 +82,8 @@ class Extractor:
                 for file in files:
                     if file.endswith(".txt"):
                         fileName = re.sub(".txt", "", file)
-                        path = root + "\\" + file 
-                        path_output = root + "\\" + fileName
+                        path = root + "\\" + file # use / to run in linux
+                        path_output = root + "\\" + fileName # use / to run in linux
 
                         if os.stat(path).st_size >= 100:
                             print(f'Analyzing {file}...')

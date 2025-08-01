@@ -2,12 +2,20 @@ import pandas as pd
 import csv
 import os
 import sys
+import argparse
 
 from HeadTailAssign.assigner import Assigner
 from HeadTailAssign.gamess import GAMESS
 from HeadTailAssign.directory import Directory
 from HeadTailAssign.extractor import Extractor
 from HeadTailAssign.logger import Logger
+
+parser = argparse.ArgumentParser(description="To run HTA use: python main.py [input path].csv", 
+                                epilog="If you need more help contact us by creating an issue in GitHub.")
+parser.add_argument('-v', '--version', action='version', version='2.1.0', 
+                    help='show program version number and exits')
+
+args = parser.parse_known_args()
 
 directory = Directory()
 directory.starting(disable=False)

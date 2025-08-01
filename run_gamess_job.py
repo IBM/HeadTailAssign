@@ -3,6 +3,9 @@ import os
 from datetime import datetime
 from subprocess import call
 
+# Adapted from https://github.com/Ianiusha/Uselfuls_Scripts/blob/master/run_gamess_job.py
+# Anna Tomberg
+# run GAMESS-US job like a normal person
 
 # HERE GIVE THE FULL PATH TO GAMESS FOLDER:
 path_to_gamess = "C:\\Users\\Public\\gamess-64" #DEFAULT

@@ -129,9 +129,10 @@ class GAMESS:
         '''
         for root, dirs, files in os.walk(name_dir):
             for file in files:
-                path = root + '\\' + file
+                path = root + '\\' + file # use / to run in linux
                 if file.endswith(".inp"):
-                    os.system('python ././run_gamess_job.py '+path+' 2')
+                    os.system('python ././run_gamess_job.py '+path+' 2') #change to run_gamess_job_linux.py
+                                                                            # to run on linux
 
         count = 0
         for file in glob.glob("*.log"):
