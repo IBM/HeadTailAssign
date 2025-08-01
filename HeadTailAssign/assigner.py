@@ -233,7 +233,7 @@ class Assigner:
                         classes.append(a)
                     else:
                         try:    
-                            file = pd.read_csv(f"{name}\\{name}_monomer0.csv", sep=',')
+                            file = pd.read_csv(f"{name}/{name}_monomer0.csv", sep=',')
                             id_number = file['id'].tolist()
                             atom_mappings = helper._sum_one_to_list_lists(atom_maps)
                             a = helper._get_classes_two_class(id_number, atom_mappings, org_functions)
@@ -275,7 +275,7 @@ class Assigner:
                         m_count = 0
                         while m_count < len(co_org_functions):
                             try:
-                                file = pd.read_csv(f"{name}\\{name}_monomer{m_count}.csv", sep=',')
+                                file = pd.read_csv(f"{name}/{name}_monomer{m_count}.csv", sep=',')
                                 id_number = file['id'].tolist()
                                 co_id_number.append(id_number)
                             except(FileNotFoundError):
@@ -307,7 +307,7 @@ class Assigner:
                     classes.append(a)
                 else:
                     try:    
-                        file = pd.read_csv(f"{name}\\{name}_monomer0.csv", sep=',')
+                        file = pd.read_csv(f"{name}/{name}_monomer0.csv", sep=',')
                         id_number = file['id'].tolist()
                         atom_mappings = helper._sum_one_to_list_lists(atom_maps)
                         a = helper._get_classes_two_class(id_number, atom_mappings, org_functions)
