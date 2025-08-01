@@ -18,7 +18,7 @@ conda env create -f environment.yml
 
 GAMESS is also a requirement. This software was developed to use GAMESS version 2020-R2 and 2024-R2
 
-At the moment, HTA only runs in Windows OS. We are working on adapting the package to also work in Linux OS
+This version of HTA only runs in Windows OS. To run on Linux OS some changes need to be done on the code. Please, refer to observations for a detailed explanation of the changes.
 
 ### **Running the script**
 
@@ -100,6 +100,25 @@ in which,
             output_file.write(' $SCF DIRSCF=.TRUE. $END')
             output_file.write('\n')
 ```
+- To run on Linux OS:
+
+  extractor.py
+    
+      Line 31 replace "\\" for "/"
+      Line 32 replace "\\" for "/"
+      Line 85  replace "\\" for "/"
+      Line 86  replace "\\" for "/"
+  
+  assigner.py
+  
+      Line 236  replace "\\" for "/"
+      Line 278 replace "\\" for "/"
+      Line 310  replace "\\" for "/"
+  
+  gamess.py
+  
+      Line 132  replace "\\" for "/"
+      Line 134 replace "os.system('python ././run_gamess_job.py '+path+' 2')" for "os.system('python ././run_gamess_job_linux.py '+path+' 2')"
 
 ---
 
